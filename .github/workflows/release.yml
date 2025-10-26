@@ -13,33 +13,68 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
+          node-version: "20.x"
+          cache: 'npm'
 
       - name: Build plugin
         run: |
           npm ci
           npm run build
 
+      - name: Get version from tag
+        id: get_version
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          version="${tag#v}"  # Remove 'v' prefix if present
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          if [ -f "CHANGELOG.md" ]; then
+            # Extract notes between this version and the next heading
+            awk -v version="${{ steps.get_version.outputs.version }}" '
+              /^## / { if (found) exit; if ($2 == version || $2 == "["version"]") found=1; next }
+              found { print }
+            ' CHANGELOG.md > release_notes.txt
+            echo "notes_file=release_notes.txt" >> $GITHUB_OUTPUT
+          else
+            echo "notes_file=" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          tag="${GITHUB_REF#refs/tags/}"
+          tag="${{ steps.get_version.outputs.tag }}"
+          
           echo "Creating release for tag: $tag"
-
+          
           # Check the built files exist
           ls -l dist/
 
-          gh release create "$tag" \
-            --title="$tag" \
-            --draft \
-            dist/main.js \
-            dist/manifest.json \
-            dist/styles.css \
-            dist/README.md
+          # Create release with changelog notes or auto-generated notes
+          if [ -n "${{ steps.changelog.outputs.notes_file }}" ] && [ -f "${{ steps.changelog.outputs.notes_file }}" ]; then
+            gh release create "$tag" \
+              --title "Release $tag" \
+              --notes-file "${{ steps.changelog.outputs.notes_file }}" \
+              dist/main.js \
+              dist/manifest.json \
+              dist/styles.css
+          else
+            gh release create "$tag" \
+              --title "Release $tag" \
+              --generate-notes \
+              dist/main.js \
+              dist/manifest.json \
+              dist/styles.css
+          fi
+          
+          # To create draft releases instead, add --draft flag to gh release create commands above
