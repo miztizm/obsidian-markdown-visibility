@@ -2,8 +2,10 @@ name: Release Obsidian plugin
 
 on:
   push:
-    tags:
-      - "*"   # trigger when pushing a tag
+    branches:
+      - main
+    paths:
+      - 'package.json'   # trigger when package.json changes
 
 permissions:
   contents: write   # needed for gh release
@@ -14,32 +16,61 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # Need 2 commits to compare version change
+
+      - name: Check if version changed
+        id: version_check
+        run: |
+          # Get current version from package.json
+          current_version=$(node -p "require('./package.json').version")
+          
+          # Get previous version from package.json in previous commit
+          git show HEAD^:package.json > package.json.old 2>/dev/null || echo '{"version":"0.0.0"}' > package.json.old
+          previous_version=$(node -p "require('./package.json.old').version")
+          
+          echo "Current version: $current_version"
+          echo "Previous version: $previous_version"
+          
+          if [ "$current_version" != "$previous_version" ]; then
+            echo "Version changed from $previous_version to $current_version"
+            echo "version=$current_version" >> $GITHUB_OUTPUT
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version not changed, skipping release"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Use Node.js
+        if: steps.version_check.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
           cache: 'npm'
 
       - name: Build plugin
+        if: steps.version_check.outputs.changed == 'true'
         run: |
           npm ci
           npm run build
 
-      - name: Get version from tag
-        id: get_version
+      - name: Create tag
+        if: steps.version_check.outputs.changed == 'true'
         run: |
-          tag="${GITHUB_REF#refs/tags/}"
-          version="${tag#v}"  # Remove 'v' prefix if present
-          echo "tag=$tag" >> $GITHUB_OUTPUT
-          echo "version=$version" >> $GITHUB_OUTPUT
+          version="${{ steps.version_check.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$version" -m "Release $version"
+          git push origin "$version"
 
       - name: Extract changelog for this version
+        if: steps.version_check.outputs.changed == 'true'
         id: changelog
         run: |
+          version="${{ steps.version_check.outputs.version }}"
           if [ -f "CHANGELOG.md" ]; then
             # Extract notes between this version and the next heading
-            awk -v version="${{ steps.get_version.outputs.version }}" '
+            awk -v version="$version" '
               /^## / { if (found) exit; if ($2 == version || $2 == "["version"]") found=1; next }
               found { print }
             ' CHANGELOG.md > release_notes.txt
@@ -49,28 +80,29 @@ jobs:
           fi
 
       - name: Create release
+        if: steps.version_check.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          tag="${{ steps.get_version.outputs.tag }}"
+          version="${{ steps.version_check.outputs.version }}"
           
-          echo "Creating release for tag: $tag"
+          echo "Creating release for version: $version"
           
           # Check the built files exist
           ls -l dist/
 
           # Create release with changelog notes or auto-generated notes
           if [ -n "${{ steps.changelog.outputs.notes_file }}" ] && [ -f "${{ steps.changelog.outputs.notes_file }}" ]; then
-            gh release create "$tag" \
-              --title "Release $tag" \
+            gh release create "$version" \
+              --title "Release $version" \
               --notes-file "${{ steps.changelog.outputs.notes_file }}" \
               dist/main.js \
               dist/manifest.json \
               dist/styles.css
           else
-            gh release create "$tag" \
-              --title "Release $tag" \
+            gh release create "$version" \
+              --title "Release $version" \
               --generate-notes \
               dist/main.js \
               dist/manifest.json \
