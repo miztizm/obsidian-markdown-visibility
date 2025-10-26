@@ -3,10 +3,9 @@
 	"name": "Markdown Visibility",
 	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "Toggle visibility of Markdown syntax markers in editor.",
+	"description": "Toggle visibility of Markdown syntax markers in editor mode.",
 	"author": "miztizm",
 	"authorUrl": "https://github.com/miztizm",
 	"fundingUrl": "https://buymeacoffee.com/miztizm",
 	"isDesktopOnly": false
 }
-
