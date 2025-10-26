@@ -1,0 +1,24 @@
+# Obsidian Plugin Build Files
+node_modules/
+
+# Build artifacts (dist/ is committed for end users)
+*.js.map
+
+# Development
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# OS
+Thumbs.db
+
+.github/instructions/kluster-code-verify.instructions.md
+.kluster

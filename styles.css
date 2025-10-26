@@ -1,0 +1,9 @@
+/*
+ * Markdown Visibility Plugin Styles
+ *
+ * This file is intentionally empty because all CSS is dynamically injected
+ * by the plugin's TypeScript code (src/main.ts). This allows the plugin to
+ * toggle marker visibility on/off without requiring Obsidian restarts.
+ *
+ * DO NOT add CSS rules here - they will persist even when the plugin is disabled!
+ */
