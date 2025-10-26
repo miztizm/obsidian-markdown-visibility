@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Code blocks (`` `code` ``)
   - Blockquotes (`> quote`)
 - Optional hiding of link URLs while keeping link text visible
-- Works in Live Preview mode
+- Works in Editor mode
 - Comprehensive documentation
 - GitHub Actions workflow for automated releases
 - Development guide for contributors

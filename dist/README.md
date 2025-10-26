@@ -14,7 +14,7 @@ This folder contains the complete plugin for Obsidian.
 
 ## What It Does
 
-Hides Markdown formatting markers (`**`, `#`, `[]`, etc.) in Live Preview mode for a cleaner writing experience.
+Hides Markdown formatting markers (`**`, `#`, `[]`, etc.) in editor mode for a cleaner writing experience.
 
 ## Usage
 
@@ -31,7 +31,7 @@ Hides Markdown formatting markers (`**`, `#`, `[]`, etc.) in Live Preview mode f
 
 **Markers still visible:**
 - Enable plugin in Settings → Community Plugins
-- Use Live Preview mode (not Source mode)
+- Use Editor mode (not Source mode)
 - Check Settings → Markdown Visibility
 
 **No eye icon:**

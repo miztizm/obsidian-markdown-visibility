@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-markdown-visibility",
 	"version": "1.0.0",
-	"description": "Toggle visibility of Markdown syntax markers in Live Preview.",
+	"description": "Toggle visibility of Markdown syntax markers in editor.",
 	"main": "dist/main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

@@ -76,7 +76,7 @@ A: No. This is purely visual—your source files remain unchanged.
 A: Yes. Settings → Markdown Visibility → Granular Controls.
 
 **Q: Does it work in Source mode?**
-A: It works best in Live Preview mode.
+A: It works best in editor mode.
 
 **Q: Can I hide the ribbon icon?**
 A: Yes. Settings → Markdown Visibility → Interface Options → Show ribbon icon.
