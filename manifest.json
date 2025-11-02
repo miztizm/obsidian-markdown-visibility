@@ -1,10 +1,12 @@
 {
-	"id": "markdown-visibility", 
+	"id": "markdown-visibility",
 	"name": "Markdown Visibility",
 	"version": "1.0.3",
-	"minObsidianVersion": "0.15.0",
 	"description": "Toggle visibility of Markdown syntax markers in Live Preview.",
 	"author": "miztizm",
 	"authorUrl": "https://github.com/miztizm",
+	"minAppVersion": "0.15.0",
+	"isDesktopOnly": false,
+	"hasEmbedded": false,
 	"fundingUrl": "https://buymeacoffee.com/miztizm"
 }
