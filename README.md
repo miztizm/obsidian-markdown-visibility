@@ -30,15 +30,6 @@ Hides Markdown syntax characters (like `**`, `#`, `[]`) while keeping your forma
 3. Reload Obsidian (`Ctrl+R` or `Cmd+R`)
 4. Enable in Settings → Community Plugins
 
-### From Repository (Latest Version)
-
-1. Download files from the [dist/ folder](https://github.com/miztizm/obsidian-markdown-visibility/tree/master/dist):
-   - `main.js`
-   - `manifest.json`
-   - `styles.css`
-2. Place in `<vault>/.obsidian/plugins/obsidian-markdown-visibility/`
-3. Reload Obsidian and enable the plugin
-
 ## Usage
 
 ### Toggle Visibility
