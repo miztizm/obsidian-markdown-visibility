@@ -51,7 +51,7 @@ var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
       this.createStatusBarItem();
     }
     this.addCommand({
-      id: "toggle-markdown-visibility",
+      id: "toggle-md-visibility",
       name: "Toggle Markdown Visibility",
       callback: () => {
         this.toggleVisibility();
