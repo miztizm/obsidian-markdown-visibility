@@ -41,7 +41,7 @@ export default class MarkdownVisibilityPlugin extends Plugin {
 		// Register toggle command
 		this.addCommand({
 			id: 'toggle-md-visibility',
-            name: "Markdown Visibility",
+            name: "Toggle marker visibility",
 			callback: () => {
 				this.toggleVisibility();
 			}

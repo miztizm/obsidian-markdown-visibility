@@ -52,7 +52,7 @@ var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
     }
     this.addCommand({
       id: "toggle-md-visibility",
-      name: "Markdown Visibility",
+      name: "Toggle marker visibility",
       callback: () => {
         this.toggleVisibility();
       }
