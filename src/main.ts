@@ -26,7 +26,6 @@ const DEFAULT_SETTINGS: MarkdownVisibilitySettings = {
 
 export default class MarkdownVisibilityPlugin extends Plugin {
 	settings: MarkdownVisibilitySettings;
-	private styleEl: HTMLStyleElement | null = null;
 	private statusBarItem: HTMLElement | null = null;
 
 	async onload() {
@@ -71,7 +70,7 @@ export default class MarkdownVisibilityPlugin extends Plugin {
 
 	toggleVisibility() {
 		this.settings.enabled = !this.settings.enabled;
-		this.saveSettings();
+		void this.saveSettings();
 
 		if (this.settings.enabled) {
 			this.applyStyles();
@@ -111,96 +110,31 @@ export default class MarkdownVisibilityPlugin extends Plugin {
 	}
 
 	applyStyles() {
-		// Always remove existing styles first to ensure clean state
-		this.removeStyles();
+		// Add body class to enable CSS rules from styles.css
+		document.body.classList.add('markdown-visibility-enabled');
 
-		this.styleEl = document.createElement('style');
-		this.styleEl.id = 'markdown-visibility-styles';
-		this.styleEl.setAttribute('data-markdown-visibility', 'active');
-
-		let css = '';
-
-		// FIX: Multi-layer hiding approach for ALL formatting types to prevent text offset
-		// This prevents layout shifts when clicking on text with Cyrillic characters or any formatting
-		// Use multiple hiding techniques simultaneously to ensure markers NEVER appear in any state
-		const multiLayerHideStyle = 'font-size: 0 !important; width: 0 !important; height: 0 !important; display: inline !important; visibility: hidden !important; opacity: 0 !important;';
-
-		// Helper function to apply multi-layer hiding to all possible states
-		const applyMultiLayerHiding = (selector: string): string => {
-			let rules = '';
-			rules += `${selector} { ${multiLayerHideStyle} }\n`;
-			rules += `.cm-active ${selector} { ${multiLayerHideStyle} }\n`;
-			rules += `.cm-activeLine ${selector} { ${multiLayerHideStyle} }\n`;
-			rules += `.cm-line ${selector} { ${multiLayerHideStyle} }\n`;
-			rules += `.cm-line.cm-active ${selector} { ${multiLayerHideStyle} }\n`;
-			rules += `.cm-content ${selector} { ${multiLayerHideStyle} }\n`;
-			return rules;
-		};
-
-		if (this.settings.hideHeaders) {
-			css += applyMultiLayerHiding('.cm-formatting-header');
-		}
-		if (this.settings.hideBold) {
-			css += applyMultiLayerHiding('.cm-formatting-strong');
-		}
-		if (this.settings.hideItalic) {
-			css += applyMultiLayerHiding('.cm-formatting-em');
-		}
-		if (this.settings.hideLinks) {
-			css += applyMultiLayerHiding('.cm-formatting-link');
-			css += applyMultiLayerHiding('.cm-formatting-link-string');
-			css += applyMultiLayerHiding('.cm-url');
-			css += applyMultiLayerHiding('.cm-hmd-internal-link .cm-underline');
-		}
-		if (this.settings.hideCode) {
-			// Hide inline code backticks with multi-layer approach
-			css += applyMultiLayerHiding('.cm-formatting-code');
-
-			// FIX: Re-enable code block fence hiding with multi-layer approach
-			// Previous issue was caused by padding, not hiding itself
-			// Hide fence markers WITHOUT adding any padding
-			css += applyMultiLayerHiding('.cm-formatting-code-block');
-			css += applyMultiLayerHiding('.HyperMD-codeblock-begin');
-			css += applyMultiLayerHiding('.HyperMD-codeblock-end');
-		}
-		if (this.settings.hideQuotes) {
-			css += applyMultiLayerHiding('.cm-formatting-quote');
-		}
-		if (this.settings.hideLists) {
-			// FIX: Use color: transparent instead of font-size: 0 to preserve bullet rendering
-			// This hides the markdown syntax (-, *, +) but allows Obsidian to render bullets (•)
-			css += `.cm-formatting-list { color: transparent !important; }\n`;
-			css += `.cm-formatting-list-ul { color: transparent !important; }\n`;
-			css += `.cm-formatting-list-ol { color: transparent !important; }\n`;
-		}
-
-		// Only append if we have CSS rules to apply
-		if (css.length > 0) {
-			this.styleEl.textContent = css;
-			document.head.appendChild(this.styleEl);
-		} else {
-			this.styleEl = null;
-		}
+		// Add/remove granular control classes based on settings
+		document.body.classList.toggle('mv-hide-headers', this.settings.hideHeaders);
+		document.body.classList.toggle('mv-hide-bold', this.settings.hideBold);
+		document.body.classList.toggle('mv-hide-italic', this.settings.hideItalic);
+		document.body.classList.toggle('mv-hide-links', this.settings.hideLinks);
+		document.body.classList.toggle('mv-hide-code', this.settings.hideCode);
+		document.body.classList.toggle('mv-hide-quotes', this.settings.hideQuotes);
+		document.body.classList.toggle('mv-hide-lists', this.settings.hideLists);
 	}
 
 	removeStyles() {
-		// Remove by ID to ensure we catch any orphaned style elements
-		const existingStyle = document.getElementById('markdown-visibility-styles');
-		if (existingStyle) {
-			existingStyle.remove();
-		}
+		// Remove body class to disable CSS rules from styles.css
+		document.body.classList.remove('markdown-visibility-enabled');
 
-		// Also remove via reference if it exists
-		if (this.styleEl) {
-			this.styleEl.remove();
-			this.styleEl = null;
-		}
-
-		// Final verification - log error if style element still exists
-		const stillExists = document.getElementById('markdown-visibility-styles');
-		if (stillExists) {
-			console.error('[Markdown Visibility] ERROR: Style element still exists after removal!');
-		}
+		// Remove all granular control classes
+		document.body.classList.remove('mv-hide-headers');
+		document.body.classList.remove('mv-hide-bold');
+		document.body.classList.remove('mv-hide-italic');
+		document.body.classList.remove('mv-hide-links');
+		document.body.classList.remove('mv-hide-code');
+		document.body.classList.remove('mv-hide-quotes');
+		document.body.classList.remove('mv-hide-lists');
 	}
 
 	refreshStyles() {
@@ -224,9 +158,9 @@ class MarkdownVisibilitySettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Markdown Visibility Settings' });
+		new Setting(containerEl).setName('Markdown visibility settings').setHeading();
 
-		containerEl.createEl('h3', { text: 'Interface Options' });
+		new Setting(containerEl).setName('Interface options').setHeading();
 
 		// Show status bar
 		new Setting(containerEl)
@@ -245,7 +179,7 @@ class MarkdownVisibilitySettingTab extends PluginSettingTab {
 					}
 				}));
 
-		containerEl.createEl('h3', { text: 'Granular Controls' });
+		new Setting(containerEl).setName('Granular controls').setHeading();
 		containerEl.createEl('p', {
 			text: 'Choose which types of Markdown markers to hide:',
 			cls: 'setting-item-description'

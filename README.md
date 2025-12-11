@@ -66,9 +66,6 @@ A: No. This is purely visual—your source files remain unchanged.
 **Q: Can I choose which markers to hide?**
 A: Yes. Settings → Markdown Visibility → Granular Controls.
 
-**Q: Does it work in Source mode?**
-A: It works best in editor mode.
-
 **Q: Can I hide the ribbon icon?**
 A: Yes. Settings → Markdown Visibility → Interface Options → Show ribbon icon.
 

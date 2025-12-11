@@ -1,9 +1,204 @@
 /*
  * Markdown Visibility Plugin Styles
  *
- * This file is intentionally empty because all CSS is dynamically injected
- * by the plugin's TypeScript code (src/main.ts). This allows the plugin to
- * toggle marker visibility on/off without requiring Obsidian restarts.
- *
- * DO NOT add CSS rules here - they will persist even when the plugin is disabled!
+ * CSS rules are applied based on body classes added by the plugin.
+ * The plugin adds 'markdown-visibility-enabled' when active, plus
+ * granular control classes like 'mv-hide-headers', 'mv-hide-bold', etc.
  */
+
+/* Multi-layer hiding approach for ALL formatting types to prevent text offset
+ * This prevents layout shifts when clicking on text with Cyrillic characters or any formatting
+ * Use multiple hiding techniques simultaneously to ensure markers NEVER appear in any state
+ */
+
+/* ===== HEADERS ===== */
+body.markdown-visibility-enabled.mv-hide-headers .cm-formatting-header,
+body.markdown-visibility-enabled.mv-hide-headers .cm-active .cm-formatting-header,
+body.markdown-visibility-enabled.mv-hide-headers .cm-activeLine .cm-formatting-header,
+body.markdown-visibility-enabled.mv-hide-headers .cm-line .cm-formatting-header,
+body.markdown-visibility-enabled.mv-hide-headers .cm-line.cm-active .cm-formatting-header,
+body.markdown-visibility-enabled.mv-hide-headers .cm-content .cm-formatting-header {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* ===== BOLD ===== */
+body.markdown-visibility-enabled.mv-hide-bold .cm-formatting-strong,
+body.markdown-visibility-enabled.mv-hide-bold .cm-active .cm-formatting-strong,
+body.markdown-visibility-enabled.mv-hide-bold .cm-activeLine .cm-formatting-strong,
+body.markdown-visibility-enabled.mv-hide-bold .cm-line .cm-formatting-strong,
+body.markdown-visibility-enabled.mv-hide-bold .cm-line.cm-active .cm-formatting-strong,
+body.markdown-visibility-enabled.mv-hide-bold .cm-content .cm-formatting-strong {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* ===== ITALIC ===== */
+body.markdown-visibility-enabled.mv-hide-italic .cm-formatting-em,
+body.markdown-visibility-enabled.mv-hide-italic .cm-active .cm-formatting-em,
+body.markdown-visibility-enabled.mv-hide-italic .cm-activeLine .cm-formatting-em,
+body.markdown-visibility-enabled.mv-hide-italic .cm-line .cm-formatting-em,
+body.markdown-visibility-enabled.mv-hide-italic .cm-line.cm-active .cm-formatting-em,
+body.markdown-visibility-enabled.mv-hide-italic .cm-content .cm-formatting-em {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* ===== LINKS ===== */
+body.markdown-visibility-enabled.mv-hide-links .cm-formatting-link,
+body.markdown-visibility-enabled.mv-hide-links .cm-active .cm-formatting-link,
+body.markdown-visibility-enabled.mv-hide-links .cm-activeLine .cm-formatting-link,
+body.markdown-visibility-enabled.mv-hide-links .cm-line .cm-formatting-link,
+body.markdown-visibility-enabled.mv-hide-links .cm-line.cm-active .cm-formatting-link,
+body.markdown-visibility-enabled.mv-hide-links .cm-content .cm-formatting-link {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-links .cm-formatting-link-string,
+body.markdown-visibility-enabled.mv-hide-links .cm-active .cm-formatting-link-string,
+body.markdown-visibility-enabled.mv-hide-links .cm-activeLine .cm-formatting-link-string,
+body.markdown-visibility-enabled.mv-hide-links .cm-line .cm-formatting-link-string,
+body.markdown-visibility-enabled.mv-hide-links .cm-line.cm-active .cm-formatting-link-string,
+body.markdown-visibility-enabled.mv-hide-links .cm-content .cm-formatting-link-string {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-links .cm-url,
+body.markdown-visibility-enabled.mv-hide-links .cm-active .cm-url,
+body.markdown-visibility-enabled.mv-hide-links .cm-activeLine .cm-url,
+body.markdown-visibility-enabled.mv-hide-links .cm-line .cm-url,
+body.markdown-visibility-enabled.mv-hide-links .cm-line.cm-active .cm-url,
+body.markdown-visibility-enabled.mv-hide-links .cm-content .cm-url {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-links .cm-hmd-internal-link .cm-underline,
+body.markdown-visibility-enabled.mv-hide-links .cm-active .cm-hmd-internal-link .cm-underline,
+body.markdown-visibility-enabled.mv-hide-links .cm-activeLine .cm-hmd-internal-link .cm-underline,
+body.markdown-visibility-enabled.mv-hide-links .cm-line .cm-hmd-internal-link .cm-underline,
+body.markdown-visibility-enabled.mv-hide-links .cm-line.cm-active .cm-hmd-internal-link .cm-underline,
+body.markdown-visibility-enabled.mv-hide-links .cm-content .cm-hmd-internal-link .cm-underline {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* ===== CODE ===== */
+/* Inline code backticks */
+body.markdown-visibility-enabled.mv-hide-code .cm-formatting-code,
+body.markdown-visibility-enabled.mv-hide-code .cm-active .cm-formatting-code,
+body.markdown-visibility-enabled.mv-hide-code .cm-activeLine .cm-formatting-code,
+body.markdown-visibility-enabled.mv-hide-code .cm-line .cm-formatting-code,
+body.markdown-visibility-enabled.mv-hide-code .cm-line.cm-active .cm-formatting-code,
+body.markdown-visibility-enabled.mv-hide-code .cm-content .cm-formatting-code {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* Code block fence markers */
+body.markdown-visibility-enabled.mv-hide-code .cm-formatting-code-block,
+body.markdown-visibility-enabled.mv-hide-code .cm-active .cm-formatting-code-block,
+body.markdown-visibility-enabled.mv-hide-code .cm-activeLine .cm-formatting-code-block,
+body.markdown-visibility-enabled.mv-hide-code .cm-line .cm-formatting-code-block,
+body.markdown-visibility-enabled.mv-hide-code .cm-line.cm-active .cm-formatting-code-block,
+body.markdown-visibility-enabled.mv-hide-code .cm-content .cm-formatting-code-block {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-code .HyperMD-codeblock-begin,
+body.markdown-visibility-enabled.mv-hide-code .cm-active .HyperMD-codeblock-begin,
+body.markdown-visibility-enabled.mv-hide-code .cm-activeLine .HyperMD-codeblock-begin,
+body.markdown-visibility-enabled.mv-hide-code .cm-line .HyperMD-codeblock-begin,
+body.markdown-visibility-enabled.mv-hide-code .cm-line.cm-active .HyperMD-codeblock-begin,
+body.markdown-visibility-enabled.mv-hide-code .cm-content .HyperMD-codeblock-begin {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-code .HyperMD-codeblock-end,
+body.markdown-visibility-enabled.mv-hide-code .cm-active .HyperMD-codeblock-end,
+body.markdown-visibility-enabled.mv-hide-code .cm-activeLine .HyperMD-codeblock-end,
+body.markdown-visibility-enabled.mv-hide-code .cm-line .HyperMD-codeblock-end,
+body.markdown-visibility-enabled.mv-hide-code .cm-line.cm-active .HyperMD-codeblock-end,
+body.markdown-visibility-enabled.mv-hide-code .cm-content .HyperMD-codeblock-end {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* ===== QUOTES ===== */
+body.markdown-visibility-enabled.mv-hide-quotes .cm-formatting-quote,
+body.markdown-visibility-enabled.mv-hide-quotes .cm-active .cm-formatting-quote,
+body.markdown-visibility-enabled.mv-hide-quotes .cm-activeLine .cm-formatting-quote,
+body.markdown-visibility-enabled.mv-hide-quotes .cm-line .cm-formatting-quote,
+body.markdown-visibility-enabled.mv-hide-quotes .cm-line.cm-active .cm-formatting-quote,
+body.markdown-visibility-enabled.mv-hide-quotes .cm-content .cm-formatting-quote {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+/* ===== LISTS ===== */
+/* Use color: transparent instead of font-size: 0 to preserve bullet rendering
+ * This hides the markdown syntax (-, *, +) but allows Obsidian to render bullets (•)
+ */
+body.markdown-visibility-enabled.mv-hide-lists .cm-formatting-list {
+	color: transparent !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-lists .cm-formatting-list-ul {
+	color: transparent !important;
+}
+
+body.markdown-visibility-enabled.mv-hide-lists .cm-formatting-list-ol {
+	color: transparent !important;
+}

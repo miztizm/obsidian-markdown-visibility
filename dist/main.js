@@ -42,7 +42,6 @@ var DEFAULT_SETTINGS = {
 var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
   constructor() {
     super(...arguments);
-    this.styleEl = null;
     this.statusBarItem = null;
   }
   async onload() {
@@ -74,7 +73,7 @@ var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
   }
   toggleVisibility() {
     this.settings.enabled = !this.settings.enabled;
-    this.saveSettings();
+    void this.saveSettings();
     if (this.settings.enabled) {
       this.applyStyles();
     } else {
@@ -106,80 +105,24 @@ var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
     }
   }
   applyStyles() {
-    this.removeStyles();
-    this.styleEl = document.createElement("style");
-    this.styleEl.id = "markdown-visibility-styles";
-    this.styleEl.setAttribute("data-markdown-visibility", "active");
-    let css = "";
-    const multiLayerHideStyle = "font-size: 0 !important; width: 0 !important; height: 0 !important; display: inline !important; visibility: hidden !important; opacity: 0 !important;";
-    const applyMultiLayerHiding = (selector) => {
-      let rules = "";
-      rules += `${selector} { ${multiLayerHideStyle} }
-`;
-      rules += `.cm-active ${selector} { ${multiLayerHideStyle} }
-`;
-      rules += `.cm-activeLine ${selector} { ${multiLayerHideStyle} }
-`;
-      rules += `.cm-line ${selector} { ${multiLayerHideStyle} }
-`;
-      rules += `.cm-line.cm-active ${selector} { ${multiLayerHideStyle} }
-`;
-      rules += `.cm-content ${selector} { ${multiLayerHideStyle} }
-`;
-      return rules;
-    };
-    if (this.settings.hideHeaders) {
-      css += applyMultiLayerHiding(".cm-formatting-header");
-    }
-    if (this.settings.hideBold) {
-      css += applyMultiLayerHiding(".cm-formatting-strong");
-    }
-    if (this.settings.hideItalic) {
-      css += applyMultiLayerHiding(".cm-formatting-em");
-    }
-    if (this.settings.hideLinks) {
-      css += applyMultiLayerHiding(".cm-formatting-link");
-      css += applyMultiLayerHiding(".cm-formatting-link-string");
-      css += applyMultiLayerHiding(".cm-url");
-      css += applyMultiLayerHiding(".cm-hmd-internal-link .cm-underline");
-    }
-    if (this.settings.hideCode) {
-      css += applyMultiLayerHiding(".cm-formatting-code");
-      css += applyMultiLayerHiding(".cm-formatting-code-block");
-      css += applyMultiLayerHiding(".HyperMD-codeblock-begin");
-      css += applyMultiLayerHiding(".HyperMD-codeblock-end");
-    }
-    if (this.settings.hideQuotes) {
-      css += applyMultiLayerHiding(".cm-formatting-quote");
-    }
-    if (this.settings.hideLists) {
-      css += `.cm-formatting-list { color: transparent !important; }
-`;
-      css += `.cm-formatting-list-ul { color: transparent !important; }
-`;
-      css += `.cm-formatting-list-ol { color: transparent !important; }
-`;
-    }
-    if (css.length > 0) {
-      this.styleEl.textContent = css;
-      document.head.appendChild(this.styleEl);
-    } else {
-      this.styleEl = null;
-    }
+    document.body.classList.add("markdown-visibility-enabled");
+    document.body.classList.toggle("mv-hide-headers", this.settings.hideHeaders);
+    document.body.classList.toggle("mv-hide-bold", this.settings.hideBold);
+    document.body.classList.toggle("mv-hide-italic", this.settings.hideItalic);
+    document.body.classList.toggle("mv-hide-links", this.settings.hideLinks);
+    document.body.classList.toggle("mv-hide-code", this.settings.hideCode);
+    document.body.classList.toggle("mv-hide-quotes", this.settings.hideQuotes);
+    document.body.classList.toggle("mv-hide-lists", this.settings.hideLists);
   }
   removeStyles() {
-    const existingStyle = document.getElementById("markdown-visibility-styles");
-    if (existingStyle) {
-      existingStyle.remove();
-    }
-    if (this.styleEl) {
-      this.styleEl.remove();
-      this.styleEl = null;
-    }
-    const stillExists = document.getElementById("markdown-visibility-styles");
-    if (stillExists) {
-      console.error("[Markdown Visibility] ERROR: Style element still exists after removal!");
-    }
+    document.body.classList.remove("markdown-visibility-enabled");
+    document.body.classList.remove("mv-hide-headers");
+    document.body.classList.remove("mv-hide-bold");
+    document.body.classList.remove("mv-hide-italic");
+    document.body.classList.remove("mv-hide-links");
+    document.body.classList.remove("mv-hide-code");
+    document.body.classList.remove("mv-hide-quotes");
+    document.body.classList.remove("mv-hide-lists");
   }
   refreshStyles() {
     this.removeStyles();
@@ -196,8 +139,8 @@ var MarkdownVisibilitySettingTab = class extends import_obsidian.PluginSettingTa
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Markdown Visibility Settings" });
-    containerEl.createEl("h3", { text: "Interface Options" });
+    new import_obsidian.Setting(containerEl).setName("Markdown visibility settings").setHeading();
+    new import_obsidian.Setting(containerEl).setName("Interface options").setHeading();
     new import_obsidian.Setting(containerEl).setName("Show status bar item").setDesc("Display plugin status in the bottom status bar (click to toggle)").addToggle((toggle) => toggle.setValue(this.plugin.settings.showStatusBar).onChange(async (value) => {
       this.plugin.settings.showStatusBar = value;
       await this.plugin.saveSettings();
@@ -207,7 +150,7 @@ var MarkdownVisibilitySettingTab = class extends import_obsidian.PluginSettingTa
         this.plugin.removeStatusBarItem();
       }
     }));
-    containerEl.createEl("h3", { text: "Granular Controls" });
+    new import_obsidian.Setting(containerEl).setName("Granular controls").setHeading();
     containerEl.createEl("p", {
       text: "Choose which types of Markdown markers to hide:",
       cls: "setting-item-description"
