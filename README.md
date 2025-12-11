@@ -39,13 +39,13 @@ Hides Markdown syntax characters (like `**`, `#`, `[]`) while keeping your forma
 - **Status bar**: Click the status bar item (if enabled)
 - **Settings panel**: Settings → Markdown Visibility
 
-### Settings
+### Options
 
-**Interface Options:**
+**Interface:**
 - Show/hide ribbon icon
 - Show/hide status bar item
 
-**Granular Controls** - Choose which markers to hide:
+**Granular controls** - Choose which markers to hide:
 - Headers (`#`, `##`, `###`)
 - Bold (`**`)
 - Italic (`*`, `_`)
