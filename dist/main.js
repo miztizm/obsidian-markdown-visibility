@@ -139,7 +139,6 @@ var MarkdownVisibilitySettingTab = class extends import_obsidian.PluginSettingTa
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    new import_obsidian.Setting(containerEl).setName("Options").setHeading();
     new import_obsidian.Setting(containerEl).setName("Interface").setHeading();
     new import_obsidian.Setting(containerEl).setName("Show status bar item").setDesc("Display plugin status in the bottom status bar (click to toggle)").addToggle((toggle) => toggle.setValue(this.plugin.settings.showStatusBar).onChange(async (value) => {
       this.plugin.settings.showStatusBar = value;

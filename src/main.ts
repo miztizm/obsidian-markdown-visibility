@@ -158,8 +158,6 @@ class MarkdownVisibilitySettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl).setName('Options').setHeading();
-
 		new Setting(containerEl).setName('Interface').setHeading();
 
 		// Show status bar
