@@ -37,7 +37,9 @@ var DEFAULT_SETTINGS = {
   hideLinks: true,
   hideCode: true,
   hideQuotes: true,
-  hideLists: true
+  hideLists: true,
+  hideHighlight: true,
+  hideTask: true
 };
 var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
   constructor() {
@@ -113,6 +115,8 @@ var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
     document.body.classList.toggle("mv-hide-code", this.settings.hideCode);
     document.body.classList.toggle("mv-hide-quotes", this.settings.hideQuotes);
     document.body.classList.toggle("mv-hide-lists", this.settings.hideLists);
+    document.body.classList.toggle("mv-hide-highlight", this.settings.hideHighlight);
+    document.body.classList.toggle("mv-hide-task", this.settings.hideTask);
   }
   removeStyles() {
     document.body.classList.remove("markdown-visibility-enabled");
@@ -123,6 +127,8 @@ var MarkdownVisibilityPlugin = class extends import_obsidian.Plugin {
     document.body.classList.remove("mv-hide-code");
     document.body.classList.remove("mv-hide-quotes");
     document.body.classList.remove("mv-hide-lists");
+    document.body.classList.remove("mv-hide-highlight");
+    document.body.classList.remove("mv-hide-task");
   }
   refreshStyles() {
     this.removeStyles();
@@ -186,6 +192,16 @@ var MarkdownVisibilitySettingTab = class extends import_obsidian.PluginSettingTa
     }));
     new import_obsidian.Setting(containerEl).setName("Hide list markers").setDesc("Hide -, *, +, and numbered list markers").addToggle((toggle) => toggle.setValue(this.plugin.settings.hideLists).onChange(async (value) => {
       this.plugin.settings.hideLists = value;
+      await this.plugin.saveSettings();
+      this.plugin.refreshStyles();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Hide highlight markers").setDesc("Hide == symbols for highlighted text").addToggle((toggle) => toggle.setValue(this.plugin.settings.hideHighlight).onChange(async (value) => {
+      this.plugin.settings.hideHighlight = value;
+      await this.plugin.saveSettings();
+      this.plugin.refreshStyles();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Hide task markers").setDesc("Hide [ ] and [x] symbols for task checkboxes").addToggle((toggle) => toggle.setValue(this.plugin.settings.hideTask).onChange(async (value) => {
+      this.plugin.settings.hideTask = value;
       await this.plugin.saveSettings();
       this.plugin.refreshStyles();
     }));

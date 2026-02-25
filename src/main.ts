@@ -10,6 +10,8 @@ interface MarkdownVisibilitySettings {
 	hideCode: boolean;
 	hideQuotes: boolean;
 	hideLists: boolean;
+	hideHighlight: boolean;
+	hideTask: boolean;
 }
 
 const DEFAULT_SETTINGS: MarkdownVisibilitySettings = {
@@ -21,7 +23,9 @@ const DEFAULT_SETTINGS: MarkdownVisibilitySettings = {
 	hideLinks: true,
 	hideCode: true,
 	hideQuotes: true,
-	hideLists: true
+	hideLists: true,
+	hideHighlight: true,
+	hideTask: true
 }
 
 export default class MarkdownVisibilityPlugin extends Plugin {
@@ -121,6 +125,8 @@ export default class MarkdownVisibilityPlugin extends Plugin {
 		document.body.classList.toggle('mv-hide-code', this.settings.hideCode);
 		document.body.classList.toggle('mv-hide-quotes', this.settings.hideQuotes);
 		document.body.classList.toggle('mv-hide-lists', this.settings.hideLists);
+		document.body.classList.toggle('mv-hide-highlight', this.settings.hideHighlight);
+		document.body.classList.toggle('mv-hide-task', this.settings.hideTask);
 	}
 
 	removeStyles() {
@@ -135,6 +141,8 @@ export default class MarkdownVisibilityPlugin extends Plugin {
 		document.body.classList.remove('mv-hide-code');
 		document.body.classList.remove('mv-hide-quotes');
 		document.body.classList.remove('mv-hide-lists');
+		document.body.classList.remove('mv-hide-highlight');
+		document.body.classList.remove('mv-hide-task');
 	}
 
 	refreshStyles() {
@@ -266,6 +274,29 @@ class MarkdownVisibilitySettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					this.plugin.refreshStyles();
 				}));
+
+		// Highlight
+		new Setting(containerEl)
+			.setName('Hide highlight markers')
+			.setDesc('Hide == symbols for highlighted text')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.hideHighlight)
+				.onChange(async (value) => {
+					this.plugin.settings.hideHighlight = value;
+					await this.plugin.saveSettings();
+					this.plugin.refreshStyles();
+				}));
+
+		// Task
+		new Setting(containerEl)
+			.setName('Hide task markers')
+			.setDesc('Hide [ ] and [x] symbols for task checkboxes')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.hideTask)
+				.onChange(async (value) => {
+					this.plugin.settings.hideTask = value;
+					await this.plugin.saveSettings();
+					this.plugin.refreshStyles();
+				}));
 	}
 }
-

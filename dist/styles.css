@@ -187,6 +187,21 @@ body.markdown-visibility-enabled.mv-hide-quotes .cm-content .cm-formatting-quote
 	opacity: 0 !important;
 }
 
+/* ===== HIGHLIGHT ===== */
+body.markdown-visibility-enabled.mv-hide-highlight .cm-formatting-highlight,
+body.markdown-visibility-enabled.mv-hide-highlight .cm-active .cm-formatting-highlight,
+body.markdown-visibility-enabled.mv-hide-highlight .cm-activeLine .cm-formatting-highlight,
+body.markdown-visibility-enabled.mv-hide-highlight .cm-line .cm-formatting-highlight,
+body.markdown-visibility-enabled.mv-hide-highlight .cm-line.cm-active .cm-formatting-highlight,
+body.markdown-visibility-enabled.mv-hide-highlight .cm-content .cm-formatting-highlight {
+	font-size: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	display: inline !important;
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
 /* ===== LISTS ===== */
 /* Use color: transparent instead of font-size: 0 to preserve bullet rendering
  * This hides the markdown syntax (-, *, +) but allows Obsidian to render bullets (•)
@@ -201,4 +216,14 @@ body.markdown-visibility-enabled.mv-hide-lists .cm-formatting-list-ul {
 
 body.markdown-visibility-enabled.mv-hide-lists .cm-formatting-list-ol {
 	color: transparent !important;
+}
+
+/* ===== TASK ===== */
+/* Use color: transparent to hide bracket text while preserving layout.
+ * Negative letter-spacing compresses the invisible [ ]/[x] text width
+ * to approximate the native checkbox widget width, reducing text shift.
+ */
+body.markdown-visibility-enabled.mv-hide-task .cm-formatting-task {
+	color: transparent !important;
+	letter-spacing: -0.51em !important;
 }
