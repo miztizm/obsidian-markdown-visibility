@@ -101,12 +101,29 @@ jobs:
             # run that died between "Create tag" and "Create release" — issue #2, BRAT failed
             # with "no manifest.json in the latest release"). Skipping creation must never
             # skip the assets: heal the existing release instead.
-            echo "Release $version already exists, ensuring assets are attached"
-            gh release upload "$version" \
-              --clobber \
-              dist/main.js \
-              dist/manifest.json \
-              dist/styles.css
+            #
+            # Heal it by attaching ONLY the missing assets. `gh release upload --clobber`
+            # deletes every existing asset before re-uploading it, so a transient API or
+            # network failure mid-upload can leave the release with fewer assets than it had
+            # before the repair attempt (P1 review on #4). Existing assets are kept as-is, and
+            # a rerun against a healthy release is a no-op.
+            echo "Release $version already exists, checking for missing assets"
+            existing_assets=$(gh release view "$version" --json assets --jq '.assets[].name')
+            missing_assets=()
+            for asset in main.js manifest.json styles.css; do
+              if grep -qxF -- "$asset" <<< "$existing_assets"; then
+                echo "Asset $asset already attached, keeping it"
+              else
+                echo "Asset $asset missing, will upload"
+                missing_assets+=("dist/$asset")
+              fi
+            done
+
+            if [ "${#missing_assets[@]}" -eq 0 ]; then
+              echo "All assets already attached to release $version"
+            else
+              gh release upload "$version" "${missing_assets[@]}"
+            fi
           elif [ -n "${{ steps.changelog.outputs.notes_file }}" ] && [ -f "${{ steps.changelog.outputs.notes_file }}" ]; then
             gh release create "$version" \
               --title "Release $version" \
