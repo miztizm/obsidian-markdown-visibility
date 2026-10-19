@@ -12,6 +12,6 @@ Markdown Visibility becomes the quiet default for writers who want a distraction
 
 ## Stack & structure
 
-- TypeScript Obsidian plugin; `main.ts` entry, logic in `src/`, styles in `styles.css`.
+- TypeScript Obsidian plugin; entry point is `src/main.ts` (bundled by esbuild to `main.js`), logic in `src/`, styles in `styles.css`.
 - Build: esbuild via `esbuild.config.mjs` (`npm run dev` / `npm run build`), type-check with `tsc -noEmit`, lint with ESLint.
 - Plugin metadata in `manifest.json` / `versions.json`; version bump via `version-bump.mjs`. Output to `dist/main.js`.
