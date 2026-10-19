@@ -102,9 +102,9 @@ jobs:
             # with "no manifest.json in the latest release"). Skipping creation must never
             # skip the assets: heal the existing release instead.
             #
-            # Heal it by attaching ONLY the missing assets. `gh release upload --clobber`
-            # deletes every existing asset before re-uploading it, so a transient API or
-            # network failure mid-upload can leave the release with fewer assets than it had
+            # Heal it by attaching ONLY the missing assets. Overwriting every asset would
+            # delete each existing asset before its replacement is uploaded, so a transient API
+            # or network failure mid-upload can leave the release with fewer assets than it had
             # before the repair attempt (P1 review on #4). Existing assets are kept as-is, and
             # a rerun against a healthy release is a no-op.
             echo "Release $version already exists, checking for missing assets"
