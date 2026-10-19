@@ -105,24 +105,43 @@ jobs:
             # Heal it by attaching ONLY the missing assets. Overwriting every asset would
             # delete each existing asset before its replacement is uploaded, so a transient API
             # or network failure mid-upload can leave the release with fewer assets than it had
-            # before the repair attempt (P1 review on #4). Existing assets are kept as-is, and
-            # a rerun against a healthy release is a no-op.
+            # before the repair attempt (P1 review on #4). Assets that are complete (state
+            # "uploaded", non-zero size) are never deleted; a rerun against a healthy release is
+            # a no-op.
+            #
+            # Asset metadata also carries a state: only "uploaded" assets are downloadable. A
+            # failed upload can leave a same-named "starter" placeholder that is unusable and
+            # blocks a fresh upload, so it is treated as missing, deleted, and re-uploaded.
             echo "Release $version already exists, checking for missing assets"
-            existing_assets=$(gh release view "$version" --json assets --jq '.assets[].name')
-            missing_assets=()
+            assets=$(gh release view "$version" --json assets --jq '.assets[] | [.name, .state, (.size | tostring)] | @tsv')
+
+            to_delete=()
+            to_upload=()
             for asset in main.js manifest.json styles.css; do
-              if grep -qxF -- "$asset" <<< "$existing_assets"; then
+              state=$(awk -F '\t' -v name="$asset" '$1 == name { print $2; exit }' <<< "$assets")
+              size=$(awk -F '\t' -v name="$asset" '$1 == name { print $3; exit }' <<< "$assets")
+              case "$size" in ''|*[!0-9]*) size=0 ;; esac
+              if [ "$state" = "uploaded" ] && [ "$size" -gt 0 ]; then
                 echo "Asset $asset already attached, keeping it"
+              elif [ -n "$state" ]; then
+                echo "Asset $asset is unusable (state: $state, size: $size), will replace it"
+                to_delete+=("$asset")
+                to_upload+=("dist/$asset")
               else
                 echo "Asset $asset missing, will upload"
-                missing_assets+=("dist/$asset")
+                to_upload+=("dist/$asset")
               fi
             done
 
-            if [ "${#missing_assets[@]}" -eq 0 ]; then
+            # Incomplete entries hold no usable data, so deleting only those is safe.
+            for asset in "${to_delete[@]}"; do
+              gh release delete-asset "$version" "$asset" --yes
+            done
+
+            if [ "${#to_upload[@]}" -eq 0 ]; then
               echo "All assets already attached to release $version"
             else
-              gh release upload "$version" "${missing_assets[@]}"
+              gh release upload "$version" "${to_upload[@]}"
             fi
           elif [ -n "${{ steps.changelog.outputs.notes_file }}" ] && [ -f "${{ steps.changelog.outputs.notes_file }}" ]; then
             gh release create "$version" \
