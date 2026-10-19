@@ -97,7 +97,16 @@ jobs:
 
           # Create release with changelog notes or auto-generated notes
           if gh release view "$version" > /dev/null 2>&1; then
-            echo "Release $version already exists, skipping release creation"
+            # A release that already exists may be EMPTY (created by hand in the UI, or by a
+            # run that died between "Create tag" and "Create release" — issue #2, BRAT failed
+            # with "no manifest.json in the latest release"). Skipping creation must never
+            # skip the assets: heal the existing release instead.
+            echo "Release $version already exists, ensuring assets are attached"
+            gh release upload "$version" \
+              --clobber \
+              dist/main.js \
+              dist/manifest.json \
+              dist/styles.css
           elif [ -n "${{ steps.changelog.outputs.notes_file }}" ] && [ -f "${{ steps.changelog.outputs.notes_file }}" ]; then
             gh release create "$version" \
               --title "Release $version" \
