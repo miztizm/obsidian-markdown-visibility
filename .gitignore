@@ -25,3 +25,31 @@ Thumbs.db
 .kluster
 .codex/
 .claude/
+# ── navig wire (managed) ── do not edit between markers
+# linked capability junctions (live under .claude/, sources in .navig/)
+.claude/skills
+.claude/agents
+.claude/output-styles
+.claude/rules
+# machine-local / private — never commit
+.navig/
+.lab/
+.local/
+.dev/
+.backup/
+.wiki
+.docs
+# build / cache / IDE artifacts
+.next/
+.open-next/
+.wrangler/
+.venv/
+.pytest_cache/
+.tmp/
+.core-sync-tmp/
+.idea/
+# ── end navig wire (managed) ──
+
+# Local-only artifacts
+.refs/
+desktop.ini
